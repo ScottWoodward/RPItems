@@ -1,3 +1,12 @@
+# Eclipse Files #
+/.settings
+/.classpath
+/.project
+
+# Maven Bi-Products #
+/target
+
+# Compilation Files #
 *.class
 
 # Package Files #
