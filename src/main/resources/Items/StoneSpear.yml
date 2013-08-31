@@ -1,0 +1,19 @@
+Name: Stone Spear
+BaseItem: 272
+RepairMaterial: 4
+Recipe:
+  Top:
+    Left:
+    Middle:
+    Right: 4
+  Middle:
+    Left:
+    Middle: 280
+    Right:
+  Bottom:
+    Left: 280
+    Middle:
+    Right:
+Attributes:
+  MovementSpeed: +20%
+  AttackDamage: +3

@@ -1,0 +1,19 @@
+Name: Golden Battleaxe
+BaseItem: 283
+RepairMaterial: 266
+Recipe:
+  Top:
+    Left: 266
+    Middle: 266
+    Right: 266
+  Middle:
+    Left: 266
+    Middle: 280
+    Right: 266
+  Bottom:
+    Left:
+    Middle: 280
+    Right:
+Attributes:
+  MovementSpeed: -15%
+  AttackDamage: +6

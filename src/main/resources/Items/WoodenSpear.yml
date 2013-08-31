@@ -1,0 +1,19 @@
+Name: Wooden Spear
+BaseItem: 268
+RepairMaterial: 5
+Recipe:
+  Top:
+    Left:
+    Middle:
+    Right: 5
+  Middle:
+    Left:
+    Middle: 280
+    Right:
+  Bottom:
+    Left: 280
+    Middle:
+    Right:
+Attributes:
+  MovementSpeed: +15%
+  AttackDamage: +2

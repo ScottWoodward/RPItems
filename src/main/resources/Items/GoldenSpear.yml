@@ -1,0 +1,19 @@
+Name: Golden Spear
+BaseItem: 283
+RepairMaterial: 266
+Recipe:
+  Top:
+    Left:
+    Middle:
+    Right: 266
+  Middle:
+    Left:
+    Middle: 280
+    Right:
+  Bottom:
+    Left: 280
+    Middle:
+    Right:
+Attributes:
+  MovementSpeed: +15%
+  AttackDamage: +2

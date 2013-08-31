@@ -1,0 +1,19 @@
+Name: Diamond Spear
+BaseItem: 276
+RepairMaterial: 264
+Recipe:
+  Top:
+    Left:
+    Middle:
+    Right: 264
+  Middle:
+    Left:
+    Middle: 280
+    Right:
+  Bottom:
+    Left: 280
+    Middle:
+    Right:
+Attributes:
+  MovementSpeed: +30%
+  AttackDamage: +5

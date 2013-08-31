@@ -1,0 +1,19 @@
+Name: Flint Spear
+BaseItem: 268
+RepairMaterial: 318
+Recipe:
+  Top:
+    Left:
+    Middle:
+    Right: 318
+  Middle:
+    Left:
+    Middle: 280
+    Right:
+  Bottom:
+    Left: 280
+    Middle:
+    Right:
+Attributes:
+  MovementSpeed: +10%
+  AttackDamage: +1

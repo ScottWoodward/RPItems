@@ -1,0 +1,19 @@
+Name: Stone Battleaxe
+BaseItem: 272
+RepairMaterial: 4
+Recipe:
+  Top:
+    Left: 4
+    Middle: 4
+    Right: 4
+  Middle:
+    Left: 4
+    Middle: 280
+    Right: 4
+  Bottom:
+    Left: 
+    Middle: 280
+    Right:
+Attributes:
+  MovementSpeed: -15%
+  AttackDamage: +7
