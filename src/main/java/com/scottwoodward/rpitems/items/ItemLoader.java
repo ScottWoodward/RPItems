@@ -1,5 +1,5 @@
 /**
- * Copyright © 2013 - 2013 Scott Woodward
+ * Copyright 2013 - 2013 Scott Woodward
  *
  * This file is part of RPItems
  *

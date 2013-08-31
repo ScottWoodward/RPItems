@@ -1,5 +1,5 @@
 /**
- * Copyright © 2013 - ${year} Scott Woodward
+ * Copyright 2013 - ${year} Scott Woodward
  *
  * This file is part of ${project_name}
  *
