@@ -66,6 +66,7 @@ public class ItemLoader {
                 meta.setDisplayName(itemFile.getString("Name"));
                 List<String> lore = new ArrayList<String>();
                 lore.add(itemFile.getString("Name"));
+                RPItems.lores.add(itemFile.getString("Name"));
                 meta.setLore(lore);
                 itemStack.setItemMeta(meta);
                 Attributes attr = new Attributes(itemStack);

@@ -19,9 +19,14 @@
 
 package com.scottwoodward.rpitems;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.scottwoodward.rpitems.items.ItemLoader;
+import com.scottwoodward.rpitems.listeners.CraftListener;
 
 /**
  * RPItems.java
@@ -33,6 +38,7 @@ import com.scottwoodward.rpitems.items.ItemLoader;
 public class RPItems extends JavaPlugin {
     
     private static RPItems instance;
+    public static Set<String> lores;
 
     /**
      * Called when the plugin is loaded by the server. Loads configuration files and initializes data structures. 
@@ -40,7 +46,9 @@ public class RPItems extends JavaPlugin {
     @Override
     public void onEnable(){
         instance = this;
+        lores = new HashSet<String>();
         ItemLoader.loadAllItems();
+        Bukkit.getPluginManager().registerEvents(new CraftListener(), this);
     }
     
     public static RPItems getInstance(){
