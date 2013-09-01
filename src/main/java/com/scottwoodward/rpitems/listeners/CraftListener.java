@@ -100,31 +100,52 @@ public class CraftListener implements Listener {
             }
             Inventory inv = event.getView().getTopInventory();
             ItemStack[] contents = inv.getContents();
-            if(event.getSlot() == 0){
-                if(contents[1] == null){
-                    System.out.println("Clicked on first slot, slot 2 empty: allowed");
+            int i = 1;
+            if(event.getSlot() == 1){
+                i = 0;
+            }
+            if(contents[i] == null){
+                System.out.println("Clicked on first slot, slot 2 empty: allowed");
+                return;
+            }else{
+                ItemStack onCursor = event.getCursor();
+                if(onCursor.getType().getId() == Material.AIR.getId()){
+                    System.out.println("Clicked on first slot, cursor empty: allowed");
                     return;
                 }else{
-                    ItemStack onCursor = event.getCursor();
-                    if(onCursor.getType().getId() == Material.AIR.getId()){
-                        System.out.println("Clicked on first slot, cursor empty: allowed");
+                    System.out.println("Clicked on first slot, second slot full: CHECK");
+                    ItemStack first = event.getCursor();
+                    ItemStack second = contents[i];
+                    ItemMeta firstMeta = first.getItemMeta();
+                    ItemMeta secondMeta = second.getItemMeta();
+                    if(firstMeta == null && secondMeta == null){
+                        System.out.println("BOTH META NULL: ALLOWED");
+                        return;
+                    }else if(firstMeta != null && secondMeta != null){
+                        System.out.println("BOTH META VALID: CHECK FURTHER");
+                        List<String> firstLore = firstMeta.getLore();
+                        List<String> secondLore = secondMeta.getLore();
+                        if(firstLore == null && secondLore == null){
+                            System.out.println("BOTH NULL, ALLOWED");
+                            return;
+                        }else if(firstLore == null || secondLore == null){
+                            System.out.println("ONE NULL, NOT ALLOWED");
+                            event.setCancelled(true);
+                            return;
+                        }
+                        for(String lore : firstLore){
+                            if(secondLore.contains(lore)){
+                                System.out.println("LORES MATCH, ALLOWED");
+                                return;
+                            }
+                        }
+                        System.out.println("NO MATCHING LORES, NOT ALLOWED");
+                        event.setCancelled(true);
                         return;
                     }else{
-                        System.out.println("Clicked on first slot, second slot full: CHECK");
-                        ItemStack first = contents[0];
-                        ItemStack second = contents[1];
-                        ItemMeta firstMeta = first.getItemMeta();
-                        ItemMeta secondMeta = second.getItemMeta();
-                        if(firstMeta == null && secondMeta == null){
-                            System.out.println("BOTH META NULL: ALLOWED");
-                        }else{
-                            System.out.println("AT LEAST ONE META VALID: CHECK FURTHER");
-                        }
+                        System.out.println("AT LEAST ONE META VALID: CHECK FURTHER");
                     }
                 }
-            }else if(event.getSlot() == 1){
-                ItemStack item = inv.getContents()[0];
-                System.out.println(item + ": slot 1 clicked");
             }
         }
     }
