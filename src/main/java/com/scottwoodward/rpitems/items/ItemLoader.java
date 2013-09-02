@@ -59,7 +59,6 @@ public class ItemLoader {
             File file = new File(path + File.separator + files[i]);
             FileConfiguration itemFile = new YamlConfiguration();
             try {
-                System.out.println("Registering: " + files[i]);
                 itemFile.load(file);
                 itemStack = new ItemStack(Material.getMaterial(itemFile.getInt("BaseItem")));
                 meta = itemStack.getItemMeta();
@@ -120,11 +119,17 @@ public class ItemLoader {
             return attr;
         }
         try{
-            
             if(value.contains("%")){
                 value = value.replace("%", "");
                 value = value.replace("+", "");
-                attr.add(Attribute.newBuilder().operation(Operation.ADD_PERCENTAGE).amount(Double.parseDouble(value)/100).type(type).name(name).build());
+                if(value.contains("*")){
+                    value = value.replace("*", "");
+                    attr.add(Attribute.newBuilder().operation(Operation.MULTIPLY_PERCENTAGE).amount(Double.parseDouble(value)/100).type(type).name(name).build());
+                            
+                }else{
+                    attr.add(Attribute.newBuilder().operation(Operation.ADD_PERCENTAGE).amount(Double.parseDouble(value)/100).type(type).name(name).build());
+
+                }
             }else{
                 value = value.replace("+", "");
                 attr.add(Attribute.newBuilder().operation(Operation.ADD_NUMBER).amount(Double.parseDouble(value)).type(type).name(name).build());

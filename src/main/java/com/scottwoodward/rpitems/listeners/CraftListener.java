@@ -105,45 +105,48 @@ public class CraftListener implements Listener {
                 i = 0;
             }
             if(contents[i] == null){
-                System.out.println("Clicked on first slot, slot 2 empty: allowed");
+                //System.out.println("Clicked on first slot, slot 2 empty: allowed");
                 return;
             }else{
                 ItemStack onCursor = event.getCursor();
                 if(onCursor.getType().getId() == Material.AIR.getId()){
-                    System.out.println("Clicked on first slot, cursor empty: allowed");
+                    //System.out.println("Clicked on first slot, cursor empty: allowed");
                     return;
                 }else{
-                    System.out.println("Clicked on first slot, second slot full: CHECK");
+                    //System.out.println("Clicked on first slot, second slot full: CHECK");
                     ItemStack first = event.getCursor();
                     ItemStack second = contents[i];
                     ItemMeta firstMeta = first.getItemMeta();
                     ItemMeta secondMeta = second.getItemMeta();
                     if(firstMeta == null && secondMeta == null){
-                        System.out.println("BOTH META NULL: ALLOWED");
+                        //System.out.println("BOTH META NULL: ALLOWED");
                         return;
                     }else if(firstMeta != null && secondMeta != null){
-                        System.out.println("BOTH META VALID: CHECK FURTHER");
+                        //System.out.println("BOTH META VALID: CHECK FURTHER");
                         List<String> firstLore = firstMeta.getLore();
                         List<String> secondLore = secondMeta.getLore();
                         if(firstLore == null && secondLore == null){
-                            System.out.println("BOTH NULL, ALLOWED");
+                            //System.out.println("BOTH NULL, ALLOWED");
                             return;
                         }else if(firstLore == null || secondLore == null){
-                            System.out.println("ONE NULL, NOT ALLOWED");
+                            //System.out.println("ONE NULL, NOT ALLOWED");
+                            if(first.getTypeId() == Material.ENCHANTED_BOOK.getId()){
+                                return;
+                            }
                             event.setCancelled(true);
                             return;
                         }
                         for(String lore : firstLore){
                             if(secondLore.contains(lore)){
-                                System.out.println("LORES MATCH, ALLOWED");
+                                //System.out.println("LORES MATCH, ALLOWED");
                                 return;
                             }
                         }
-                        System.out.println("NO MATCHING LORES, NOT ALLOWED");
+                        //System.out.println("NO MATCHING LORES, NOT ALLOWED");
                         event.setCancelled(true);
                         return;
                     }else{
-                        System.out.println("AT LEAST ONE META VALID: CHECK FURTHER");
+                        //System.out.println("AT LEAST ONE META VALID: CHECK FURTHER");
                     }
                 }
             }
