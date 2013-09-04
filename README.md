@@ -1,7 +1,7 @@
 RPItems
 ==========
 
-A Bukkit plugin that aims to enhance the items of Minecraft, adding traditional Role Playing Game elements.
+A Bukkit plugin that aims to enhance the items of Minecraft, adding traditional Role Playing Game elements, such as stat enhancements.
 
 We use a Jenkins server for building the final plugin. The server can be found <a href="http://jenkins.scott-woodward.com">here</a>
 
