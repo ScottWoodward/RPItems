@@ -27,6 +27,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.scottwoodward.rpitems.commands.CommandManager;
 import com.scottwoodward.rpitems.items.ItemLoader;
+import com.scottwoodward.rpitems.items.ItemManager;
 import com.scottwoodward.rpitems.listeners.CraftListener;
 
 /**
@@ -49,6 +50,7 @@ public class RPItems extends JavaPlugin {
         instance = this;
         lores = new HashSet<String>();
         ItemLoader.loadAllItems();
+        ItemManager.getInstance().loadAllItems();
         Bukkit.getPluginManager().registerEvents(new CraftListener(), this);
         getCommand("spawnitem").setExecutor(new CommandManager());
     }

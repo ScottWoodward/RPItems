@@ -20,7 +20,9 @@ package com.scottwoodward.rpitems.items;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
@@ -37,14 +39,28 @@ import com.scottwoodward.rpitems.items.Attributes.AttributeType;
 import com.scottwoodward.rpitems.items.Attributes.Operation;
 
 /**
- * ItemLoader.java
- * Purpose: Loads all items from config files.
+ * ItemManager.java
+ * Purpose: 
  *
  * @author Scott Woodward
  */
-public class ItemLoader {
+public class ItemManager {
 
-    public static void loadAllItems(){
+    private static ItemManager instance;
+    private Set<SimpleItem> items;
+
+    private ItemManager(){
+        items = new HashSet<SimpleItem>();
+    }
+
+    public static ItemManager getInstance(){
+        if(instance == null){
+            instance = new ItemManager();
+        }
+        return instance;
+    }
+
+    public void loadAllItems(){
         String path = RPItems.getInstance().getDataFolder() + File.separator + "Items";
         File dir = new File(path);
         String[] files = dir.list();
@@ -54,13 +70,17 @@ public class ItemLoader {
             File file = new File(path + File.separator + files[i]);
             FileConfiguration itemFile = new YamlConfiguration();
             try {
+                String name = itemFile.getString("Name");
+                int baseItem = itemFile.getInt("BaseItem");
+                int[] recipeArray = new int[9];
+                int repairMaterial = itemFile.getInt("RepairMaterial");
+                Set<String> attributes = new HashSet<String>();
                 itemFile.load(file);
-                itemStack = new ItemStack(Material.getMaterial(itemFile.getInt("BaseItem")));
+                itemStack = new ItemStack(Material.getMaterial(baseItem));
                 meta = itemStack.getItemMeta();
-                meta.setDisplayName(itemFile.getString("Name"));
+                meta.setDisplayName(name);
                 List<String> lore = new ArrayList<String>();
-                lore.add(itemFile.getString("Name"));
-                RPItems.lores.add(itemFile.getString("Name"));
+                lore.add(name);
                 meta.setLore(lore);
                 itemStack.setItemMeta(meta);
                 Attributes attr = new Attributes(itemStack);
@@ -73,33 +93,43 @@ public class ItemLoader {
                 recipe.shape("ABC","DEF","GHI");
                 if(itemFile.getInt("Recipe.Top.Left") != 0){
                     recipe.setIngredient('A', Material.getMaterial(itemFile.getInt("Recipe.Top.Left")), -1);
+                    recipeArray[0] = itemFile.getInt("Recipe.Top.Left");
                 }
                 if(itemFile.getInt("Recipe.Top.Middle") != 0){
                     recipe.setIngredient('B', Material.getMaterial(itemFile.getInt("Recipe.Top.Middle")), -1);
+                    recipeArray[1] = itemFile.getInt("Recipe.Top.Middle");
                 }
                 if(itemFile.getInt("Recipe.Top.Right") != 0){
                     recipe.setIngredient('C', Material.getMaterial(itemFile.getInt("Recipe.Top.Right")), -1);
+                    recipeArray[2] = itemFile.getInt("Recipe.Top.Right");
                 }
                 if(itemFile.getInt("Recipe.Middle.Left") != 0){
                     recipe.setIngredient('D', Material.getMaterial(itemFile.getInt("Recipe.Middle.Left")), -1);
+                    recipeArray[3] = itemFile.getInt("Recipe.Middle.Left");
                 }
                 if(itemFile.getInt("Recipe.Middle.Middle") != 0){
                     recipe.setIngredient('E', Material.getMaterial(itemFile.getInt("Recipe.Middle.Middle")), -1);
+                    recipeArray[4] = itemFile.getInt("Recipe.Middle.Middle");
                 }
                 if(itemFile.getInt("Recipe.Middle.Right") != 0){
                     recipe.setIngredient('F', Material.getMaterial(itemFile.getInt("Recipe.Middle.Right")), -1);
+                    recipeArray[5] = itemFile.getInt("Recipe.Middle.Right");
                 }
                 if(itemFile.getInt("Recipe.Bottom.Left") != 0){
                     recipe.setIngredient('G', Material.getMaterial(itemFile.getInt("Recipe.Bottom.Left")), -1);
+                    recipeArray[6] = itemFile.getInt("Recipe.Bottom.Left");
                 }
                 if(itemFile.getInt("Recipe.Bottom.Middle") != 0){
                     recipe.setIngredient('H', Material.getMaterial(itemFile.getInt("Recipe.Bottom.Middle")), -1);
+                    recipeArray[7] = itemFile.getInt("Recipe.Bottom.Middle");
                 }
                 if(itemFile.getInt("Recipe.Bottom.Right") != 0){
                     recipe.setIngredient('I', Material.getMaterial(itemFile.getInt("Recipe.Bottom.Right")), -1);
+                    recipeArray[8] = itemFile.getInt("Recipe.Bottom.Right");
                 }
                 Bukkit.getServer().addRecipe(recipe);
-
+                SimpleItem item = new SimpleItem(name, baseItem, recipeArray, repairMaterial, attributes.toArray(new String[attributes.size()]));
+                items.add(item);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -134,4 +164,7 @@ public class ItemLoader {
         return attr;
     }
 
+    public boolean isCustomItem(ItemStack item){
+        return false;
+    }
 }
