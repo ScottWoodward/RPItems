@@ -26,7 +26,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.scottwoodward.rpitems.commands.CommandManager;
-import com.scottwoodward.rpitems.items.ItemLoader;
 import com.scottwoodward.rpitems.items.ItemManager;
 import com.scottwoodward.rpitems.listeners.CraftListener;
 
@@ -40,7 +39,6 @@ import com.scottwoodward.rpitems.listeners.CraftListener;
 public class RPItems extends JavaPlugin {
     
     private static RPItems instance;
-    public static Set<String> lores;
 
     /**
      * Called when the plugin is loaded by the server. Loads configuration files and initializes data structures. 
@@ -48,11 +46,11 @@ public class RPItems extends JavaPlugin {
     @Override
     public void onEnable(){
         instance = this;
-        lores = new HashSet<String>();
-        ItemLoader.loadAllItems();
+        //ItemLoader.loadAllItems();
         ItemManager.getInstance().loadAllItems();
         Bukkit.getPluginManager().registerEvents(new CraftListener(), this);
         getCommand("spawnitem").setExecutor(new CommandManager());
+        getCommand("addlore").setExecutor(new CommandManager());
     }
     
     public static RPItems getInstance(){

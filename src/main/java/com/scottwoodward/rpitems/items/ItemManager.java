@@ -26,12 +26,14 @@ import java.util.Set;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.material.MaterialData;
 
 import com.scottwoodward.rpitems.RPItems;
 import com.scottwoodward.rpitems.items.Attributes.Attribute;
@@ -70,12 +72,14 @@ public class ItemManager {
             File file = new File(path + File.separator + files[i]);
             FileConfiguration itemFile = new YamlConfiguration();
             try {
+                itemFile.load(file);
+
                 String name = itemFile.getString("Name");
                 int baseItem = itemFile.getInt("BaseItem");
                 int[] recipeArray = new int[9];
                 int repairMaterial = itemFile.getInt("RepairMaterial");
                 Set<String> attributes = new HashSet<String>();
-                itemFile.load(file);
+
                 itemStack = new ItemStack(Material.getMaterial(baseItem));
                 meta = itemStack.getItemMeta();
                 meta.setDisplayName(name);
@@ -128,7 +132,7 @@ public class ItemManager {
                     recipeArray[8] = itemFile.getInt("Recipe.Bottom.Right");
                 }
                 Bukkit.getServer().addRecipe(recipe);
-                SimpleItem item = new SimpleItem(name, baseItem, recipeArray, repairMaterial, attributes.toArray(new String[attributes.size()]));
+                SimpleItem item = new SimpleItem(name, baseItem, recipeArray, repairMaterial, attributes.toArray(new String[attributes.size()]), itemStack);
                 items.add(item);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -165,6 +169,47 @@ public class ItemManager {
     }
 
     public boolean isCustomItem(ItemStack item){
+        if(getCustomItem(item) == null){
+            return false;
+        }
+        return true;
+    }
+
+    public boolean areSameCustomItem(ItemStack first, ItemStack second){
+        ItemStack one = getCustomItem(first);
+        ItemStack two = getCustomItem(second);
+        if(one == null || two == null){
+            //ystem.out.println("at least one is not custom");
+            return false;
+        }
+        if(one.equals(two)){
+            //System.out.println("they match");
+            return true;
+        }
+        //System.out.println("they dont match");
         return false;
+    }
+
+    public ItemStack getCustomItem(ItemStack itemStack){
+        for(SimpleItem item : items){
+            //System.out.println("Checking against: " + item.getName());
+            if(item.getBaseItem() == itemStack.getTypeId()){
+                //System.out.println("BASE ITEM MATCH");
+                ItemMeta meta = itemStack.getItemMeta();
+                if(meta.getLore() == null){
+                    //System.out.println("NO LORE, NOT CUSTOM");
+                }else{
+                    List<String> lore = meta.getLore();
+                    //System.out.println(ChatColor.stripColor(lore.get(0) + " " + item.getName()));
+                    if(ChatColor.stripColor(lore.get(0)).contains(item.getName())){
+                        //System.out.println("LORE MATCHES, CUSTOM");
+                        return item.getItem();
+                    }
+                    //System.out.println("LORE DOESNT MATCH, NOT CUSTOM");
+                }
+            }
+        }
+        //System.out.println("DOESNT MATCH ANY BASE ITEMS");
+        return null;
     }
 }

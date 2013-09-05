@@ -33,13 +33,15 @@ public class SimpleItem {
     private int[] recipe;
     private int repairMaterial;
     private String[] attributes;
+    private ItemStack item;
     
-    SimpleItem(String name, int baseItem, int[] recipe, int repairMaterial, String[] attributes){
+    SimpleItem(String name, int baseItem, int[] recipe, int repairMaterial, String[] attributes, ItemStack item){
         this.name = name;
         this.baseItem = baseItem;
         this.recipe = recipe;
         this.repairMaterial = repairMaterial;
         this.attributes = attributes;
+        this.item = item;
     }
     
     String getName(){
@@ -62,7 +64,11 @@ public class SimpleItem {
         return attributes;
     }
     
-    boolean isSameBaseItem(ItemStack item){
+    boolean isSameCustomItem(ItemStack item){
         return false;
+    }
+    
+    ItemStack getItem(){
+        return item;
     }
 }

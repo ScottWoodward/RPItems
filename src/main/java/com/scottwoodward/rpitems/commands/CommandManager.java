@@ -38,6 +38,9 @@ public class CommandManager implements CommandExecutor {
         if(cmd.getName().equalsIgnoreCase("spawnitem")){
             SpawnItemCommand.execute(sender, args);
             return true;
+        }else if(cmd.getName().equalsIgnoreCase("addlore")){
+            AddLoreCommand.execute(sender, args);
+            return true;
         }
         return false;
     }

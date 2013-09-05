@@ -1,15 +1,23 @@
 name: RPItems
-version: 1.0.0
+version: 1.1.0
 main: com.scottwoodward.rpitems.RPItems
 
 commands:
-   spawnitem:
-      description: This is a demo command.
-      usage: /spawnitem <ID> <NAME> <LORE>
-      permission: rpitems.command.spawnitem
-      permission-message: You don't have permission to spawn an item
+  spawnitem:
+    description: This command spawns an item with a name and lore
+    usage: /spawnitem <ID> -n <NAME> -l <LORE>
+    permission: rpitems.command.spawnitem
+    permission-message: You don't have permission to spawn an item
+  addlore:
+    description: Adds a line of lore to an item.
+    usage: /addlore <Lore>
+    permission: rpitems.command.addlore
+    permission-message: You don't have permission to add lore
       
 permissions:
   rpitems.command.spawnitem:
     description: Gives access to /spawnitem
+    default: op
+  rpitems.command.addlore:
+    description: Gives access to /addlore
     default: op
