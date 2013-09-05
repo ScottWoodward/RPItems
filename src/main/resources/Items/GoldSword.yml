@@ -1,0 +1,18 @@
+Name: Golden Sword
+BaseItem: 283
+RepairMaterial: 266
+Recipe:
+  Top:
+    Left:
+    Middle: 266
+    Right: 
+  Middle:
+    Left: 266
+    Middle: 
+    Right:
+  Bottom:
+    Left: 
+    Middle: 280
+    Right:
+Attributes:
+  AttackDamage: +4

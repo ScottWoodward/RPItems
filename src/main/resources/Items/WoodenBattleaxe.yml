@@ -1,5 +1,5 @@
 Name: Wooden Battleaxe
-BaseItem: 268
+BaseItem: 271
 RepairMaterial: 5
 Recipe:
   Top:
@@ -15,5 +15,5 @@ Recipe:
     Middle: 280
     Right:
 Attributes:
-  MovementSpeed: -20%
+  MovementSpeed: -*30%
   AttackDamage: +6

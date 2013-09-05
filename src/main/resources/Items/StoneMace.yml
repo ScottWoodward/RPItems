@@ -1,19 +1,19 @@
-Name: Stone Battleaxe
-BaseItem: 275
+Name: Stone Mace
+BaseItem: 272
 RepairMaterial: 4
 Recipe:
   Top:
-    Left: 4
+    Left:
     Middle: 4
     Right: 4
   Middle:
-    Left: 4
+    Left:
     Middle: 280
     Right: 4
   Bottom:
-    Left: 
-    Middle: 280
+    Left: 280
+    Middle:
     Right:
 Attributes:
-  MovementSpeed: -*25%
-  AttackDamage: +7
+  KnockbackResistance: +0.10
+  AttackDamage: +6

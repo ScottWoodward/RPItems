@@ -1,19 +1,19 @@
-Name: Iron Spear
+Name: Iron Mace
 BaseItem: 267
 RepairMaterial: 265
 Recipe:
   Top:
     Left:
-    Middle:
+    Middle: 265
     Right: 265
   Middle:
     Left:
     Middle: 280
-    Right:
+    Right: 265
   Bottom:
     Left: 280
     Middle:
     Right:
 Attributes:
-  MovementSpeed: +*9%
-  AttackDamage: +4
+  KnockbackResistance: +0.15
+  AttackDamage: +7

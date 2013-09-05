@@ -1,0 +1,18 @@
+Name: Diamond Sword
+BaseItem: 276
+RepairMaterial: 265
+Recipe:
+  Top:
+    Left:
+    Middle: 264
+    Right: 
+  Middle:
+    Left:
+    Middle: 264
+    Right:
+  Bottom:
+    Left: 
+    Middle: 280
+    Right:
+Attributes:
+  AttackDamage: +7

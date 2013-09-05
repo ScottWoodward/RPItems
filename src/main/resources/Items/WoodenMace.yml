@@ -1,19 +1,19 @@
-Name: Diamond Spear
-BaseItem: 276
-RepairMaterial: 264
+Name: Wooden Mace
+BaseItem: 268
+RepairMaterial: 5
 Recipe:
   Top:
     Left:
-    Middle:
-    Right: 264
+    Middle: 5
+    Right: 5
   Middle:
     Left:
     Middle: 280
-    Right:
+    Right: 5
   Bottom:
     Left: 280
     Middle:
     Right:
 Attributes:
-  MovementSpeed: +*15%
+  KnockbackResistance: +0.05
   AttackDamage: +5

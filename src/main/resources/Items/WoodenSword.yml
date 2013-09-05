@@ -1,0 +1,18 @@
+Name: Wooden Sword
+BaseItem: 268
+RepairMaterial: 5
+Recipe:
+  Top:
+    Left:
+    Middle: 5
+    Right: 
+  Middle:
+    Left:
+    Middle: 5
+    Right:
+  Bottom:
+    Left: 
+    Middle: 280
+    Right:
+Attributes:
+  AttackDamage: +4

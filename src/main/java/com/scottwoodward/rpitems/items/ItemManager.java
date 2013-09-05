@@ -21,6 +21,7 @@ package com.scottwoodward.rpitems.items;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
@@ -31,9 +32,9 @@ import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.material.MaterialData;
 
 import com.scottwoodward.rpitems.RPItems;
 import com.scottwoodward.rpitems.items.Attributes.Attribute;
@@ -50,6 +51,8 @@ public class ItemManager {
 
     private static ItemManager instance;
     private Set<SimpleItem> items;
+    private static String[] positions = {"Recipe.Top.Left", "Recipe.Top.Middle", "Recipe.Top.Right", "Recipe.Middle.Left", "Recipe.Middle.Middle", "Recipe.Middle.Right", "Recipe.Bottom.Left", "Recipe.Bottom.Middle", "Recipe.Bottom.Right" };
+
 
     private ItemManager(){
         items = new HashSet<SimpleItem>();
@@ -66,20 +69,28 @@ public class ItemManager {
         String path = RPItems.getInstance().getDataFolder() + File.separator + "Items";
         File dir = new File(path);
         String[] files = dir.list();
-        ItemStack itemStack;
+        ItemStack itemStack = null;
         ItemMeta meta;
         for(int i = 0; i < files.length; i++){
             File file = new File(path + File.separator + files[i]);
             FileConfiguration itemFile = new YamlConfiguration();
             try {
                 itemFile.load(file);
-
                 String name = itemFile.getString("Name");
                 int baseItem = itemFile.getInt("BaseItem");
                 int[] recipeArray = new int[9];
                 int repairMaterial = itemFile.getInt("RepairMaterial");
                 Set<String> attributes = new HashSet<String>();
+                if(itemFile.getBoolean("OverwriteBaseItem")){
+                    Iterator<Recipe> it = Bukkit.getServer().recipeIterator();
+                    while(it.hasNext()){
+                        Recipe rec = it.next();
+                        if(rec.getResult().getTypeId() == baseItem){
+                            it.remove();
+                        }
+                    }
 
+                }              
                 itemStack = new ItemStack(Material.getMaterial(baseItem));
                 meta = itemStack.getItemMeta();
                 meta.setDisplayName(name);
@@ -94,43 +105,28 @@ public class ItemManager {
                 attr = addAttribute(AttributeType.GENERIC_MAX_HEALTH, attr, itemFile.getString("Attributes.MaxHealth"), "Max Health");
                 itemStack = attr.getStack();
                 final ShapedRecipe recipe = new ShapedRecipe(itemStack);
-                recipe.shape("ABC","DEF","GHI");
-                if(itemFile.getInt("Recipe.Top.Left") != 0){
-                    recipe.setIngredient('A', Material.getMaterial(itemFile.getInt("Recipe.Top.Left")), -1);
-                    recipeArray[0] = itemFile.getInt("Recipe.Top.Left");
+                for(int j = 0; j < ItemManager.positions.length; j++){
+                    if(itemFile.getInt(ItemManager.positions[j]) != 0){
+                        recipeArray[j] = itemFile.getInt(ItemManager.positions[j]);
+                    }
                 }
-                if(itemFile.getInt("Recipe.Top.Middle") != 0){
-                    recipe.setIngredient('B', Material.getMaterial(itemFile.getInt("Recipe.Top.Middle")), -1);
-                    recipeArray[1] = itemFile.getInt("Recipe.Top.Middle");
+
+                String[] minimizedRecipe = minimizeRecipe(recipeArray);
+                if(minimizedRecipe.length == 1){
+                    recipe.shape(minimizedRecipe[0]);
+                }else if(minimizedRecipe.length == 2){
+                    recipe.shape(minimizedRecipe[0], minimizedRecipe[1]);
+                }else{
+                    recipe.shape(minimizedRecipe[0], minimizedRecipe[1], minimizedRecipe[2]);
                 }
-                if(itemFile.getInt("Recipe.Top.Right") != 0){
-                    recipe.setIngredient('C', Material.getMaterial(itemFile.getInt("Recipe.Top.Right")), -1);
-                    recipeArray[2] = itemFile.getInt("Recipe.Top.Right");
+
+                for(int j = 0; j < 9; j++){
+                    if(recipeArray[j] != 0){
+                        char key = (char)(65 + j);
+                        recipe.setIngredient(key, Material.getMaterial(recipeArray[j]));
+                    }
                 }
-                if(itemFile.getInt("Recipe.Middle.Left") != 0){
-                    recipe.setIngredient('D', Material.getMaterial(itemFile.getInt("Recipe.Middle.Left")), -1);
-                    recipeArray[3] = itemFile.getInt("Recipe.Middle.Left");
-                }
-                if(itemFile.getInt("Recipe.Middle.Middle") != 0){
-                    recipe.setIngredient('E', Material.getMaterial(itemFile.getInt("Recipe.Middle.Middle")), -1);
-                    recipeArray[4] = itemFile.getInt("Recipe.Middle.Middle");
-                }
-                if(itemFile.getInt("Recipe.Middle.Right") != 0){
-                    recipe.setIngredient('F', Material.getMaterial(itemFile.getInt("Recipe.Middle.Right")), -1);
-                    recipeArray[5] = itemFile.getInt("Recipe.Middle.Right");
-                }
-                if(itemFile.getInt("Recipe.Bottom.Left") != 0){
-                    recipe.setIngredient('G', Material.getMaterial(itemFile.getInt("Recipe.Bottom.Left")), -1);
-                    recipeArray[6] = itemFile.getInt("Recipe.Bottom.Left");
-                }
-                if(itemFile.getInt("Recipe.Bottom.Middle") != 0){
-                    recipe.setIngredient('H', Material.getMaterial(itemFile.getInt("Recipe.Bottom.Middle")), -1);
-                    recipeArray[7] = itemFile.getInt("Recipe.Bottom.Middle");
-                }
-                if(itemFile.getInt("Recipe.Bottom.Right") != 0){
-                    recipe.setIngredient('I', Material.getMaterial(itemFile.getInt("Recipe.Bottom.Right")), -1);
-                    recipeArray[8] = itemFile.getInt("Recipe.Bottom.Right");
-                }
+
                 Bukkit.getServer().addRecipe(recipe);
                 SimpleItem item = new SimpleItem(name, baseItem, recipeArray, repairMaterial, attributes.toArray(new String[attributes.size()]), itemStack);
                 items.add(item);
@@ -140,7 +136,64 @@ public class ItemManager {
         }
     }
 
-    private static Attributes addAttribute(AttributeType type, Attributes attr, String value, String name){
+    private String[] minimizeRecipe(int[] recipeArray){
+        boolean[] colIsValid = {true, true, true};
+        boolean[] rowIsValid = {true, true, true};
+        int rows = 3;
+        int cols = 3;
+        for(int j = 0; j < 3; j++){
+            if(recipeArray[(3 * j)] == 0 && recipeArray[(3 * j) + 1] == 0 && recipeArray[(3 * j) + 2] == 0){
+                rowIsValid[j] = false;
+            }
+            if(recipeArray[j] == 0 && recipeArray[j + 3] == 0 && recipeArray[j + 6] == 0){
+                colIsValid[j] = false;
+            }
+        }
+        if(colIsValid[0] && colIsValid[2]){
+            cols = 3;
+        }else{
+            for(int j = 0; j < 3; j++){
+                if(colIsValid[j] == false){
+                    cols--;
+                }
+            }
+        }
+        if(rowIsValid[0] && rowIsValid[2]){
+            rows = 3;
+        }else{
+            for(int j = 0; j < 3; j++){
+                if(rowIsValid[j] == false){
+                    rows--;
+                }
+            }
+        }
+        String one = "";
+        String two = "";
+        String three = "";
+        for(int j = 0; j < 9; j++){
+            if(recipeArray[j] != 0){
+                if(one.length() < cols){
+                    one += (char)(65 + j);
+                }else if(two.length() < cols){
+                    two += (char)(65 + j);
+                }else{
+                    three += (char)(65 + j);
+                }
+            }
+        }
+        if(rows == 3){
+            System.out.println("THREE ROWS");
+            return new String[]{one, two, three};
+        }else if(rows ==2){
+            System.out.println("TWO ROWS");
+            return new String[]{one, two};
+        }else{
+            System.out.println("ONE ROW");
+            return new String[]{one};
+        }
+    }
+
+    private Attributes addAttribute(AttributeType type, Attributes attr, String value, String name){
         if(value == null){
             return attr;
         }
@@ -154,7 +207,6 @@ public class ItemManager {
 
                 }else{
                     attr.add(Attribute.newBuilder().operation(Operation.ADD_PERCENTAGE).amount(Double.parseDouble(value)/100).type(type).name(name).build());
-
                 }
             }else{
                 value = value.replace("+", "");
@@ -169,47 +221,37 @@ public class ItemManager {
     }
 
     public boolean isCustomItem(ItemStack item){
-        if(getCustomItem(item) == null){
+        if(getBaseCustomItem(item) == null){
             return false;
         }
         return true;
     }
 
     public boolean areSameCustomItem(ItemStack first, ItemStack second){
-        ItemStack one = getCustomItem(first);
-        ItemStack two = getCustomItem(second);
+        ItemStack one = getBaseCustomItem(first);
+        ItemStack two = getBaseCustomItem(second);
         if(one == null || two == null){
-            //ystem.out.println("at least one is not custom");
             return false;
         }
         if(one.equals(two)){
-            //System.out.println("they match");
             return true;
         }
-        //System.out.println("they dont match");
         return false;
     }
 
-    public ItemStack getCustomItem(ItemStack itemStack){
+    public ItemStack getBaseCustomItem(ItemStack itemStack){
         for(SimpleItem item : items){
-            //System.out.println("Checking against: " + item.getName());
             if(item.getBaseItem() == itemStack.getTypeId()){
-                //System.out.println("BASE ITEM MATCH");
                 ItemMeta meta = itemStack.getItemMeta();
                 if(meta.getLore() == null){
-                    //System.out.println("NO LORE, NOT CUSTOM");
                 }else{
                     List<String> lore = meta.getLore();
-                    //System.out.println(ChatColor.stripColor(lore.get(0) + " " + item.getName()));
                     if(ChatColor.stripColor(lore.get(0)).contains(item.getName())){
-                        //System.out.println("LORE MATCHES, CUSTOM");
                         return item.getItem();
                     }
-                    //System.out.println("LORE DOESNT MATCH, NOT CUSTOM");
                 }
             }
         }
-        //System.out.println("DOESNT MATCH ANY BASE ITEMS");
         return null;
     }
-}
+} 

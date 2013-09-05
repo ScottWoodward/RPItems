@@ -1,19 +1,19 @@
-Name: Diamond Spear
-BaseItem: 276
-RepairMaterial: 264
+Name: Golden Mace
+BaseItem: 283
+RepairMaterial: 266
 Recipe:
   Top:
     Left:
-    Middle:
-    Right: 264
+    Middle: 266
+    Right: 266
   Middle:
     Left:
     Middle: 280
-    Right:
+    Right: 266
   Bottom:
     Left: 280
     Middle:
     Right:
 Attributes:
-  MovementSpeed: +*15%
+  KnockbackResistance: +0.20
   AttackDamage: +5

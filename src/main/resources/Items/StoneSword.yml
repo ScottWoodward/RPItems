@@ -1,0 +1,18 @@
+Name: Stone Sword
+BaseItem: 272
+RepairMaterial: 4
+Recipe:
+  Top:
+    Left:
+    Middle: 4
+    Right: 
+  Middle:
+    Left:
+    Middle: 4
+    Right:
+  Bottom:
+    Left:
+    Middle: 280
+    Right:
+Attributes:
+  AttackDamage: +5

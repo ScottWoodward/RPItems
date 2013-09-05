@@ -15,5 +15,5 @@ Recipe:
     Middle:
     Right:
 Attributes:
-  MovementSpeed: +15%
+  MovementSpeed: +*12%
   AttackDamage: +2

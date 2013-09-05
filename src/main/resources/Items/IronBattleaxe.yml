@@ -1,5 +1,5 @@
 Name: Iron Battleaxe
-BaseItem: 267
+BaseItem: 258
 RepairMaterial: 265
 Recipe:
   Top:
@@ -15,5 +15,5 @@ Recipe:
     Middle: 280
     Right:
 Attributes:
-  MovementSpeed: -10%
+  MovementSpeed: -*20%
   AttackDamage: +8

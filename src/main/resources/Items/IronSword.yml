@@ -1,0 +1,18 @@
+Name: Iron Sword
+BaseItem: 267
+RepairMaterial: 265
+Recipe:
+  Top:
+    Left:
+    Middle: 265
+    Right:
+  Middle:
+    Left:
+    Middle: 265
+    Right:
+  Bottom:
+    Left:
+    Middle: 280
+    Right:
+Attributes:
+  AttackDamage: +6
