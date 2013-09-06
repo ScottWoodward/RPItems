@@ -90,7 +90,6 @@ public class ItemManager {
                             it.remove();
                         }
                     }
-
                 }              
                 itemStack = new ItemStack(Material.getMaterial(baseItem), itemFile.getInt("QuantityPerRecipe", 1));
                 meta = itemStack.getItemMeta();
@@ -108,7 +107,6 @@ public class ItemManager {
                 final ShapedRecipe recipe = new ShapedRecipe(itemStack);
                 for(int j = 0; j < ItemManager.positions.length; j++){
                     if(itemFile.getString(ItemManager.positions[j]) != null){
-                        System.out.println(itemFile.getString(ItemManager.positions[j]));
                         String[] slot = itemFile.getString(ItemManager.positions[j]).split("#");
                         recipeArray[j] = Integer.valueOf(slot[0]);
                         if(slot.length == 2){
@@ -128,10 +126,14 @@ public class ItemManager {
                     recipe.shape(minimizedRecipe[0], minimizedRecipe[1], minimizedRecipe[2]);
                 }
 
+                char key = 'A';
                 for(int j = 0; j < 9; j++){
-                    if(recipeArray[j] != 0){
-                        char key = (char)(65 + j);
-                        recipe.setIngredient(key, Material.getMaterial(recipeArray[j]), dataArray[j]);
+                    if(recipeArray[j] != -1){
+                        if(recipeArray[j] != 0){
+                            recipe.setIngredient(key, Material.getMaterial(recipeArray[j]), dataArray[j]);
+
+                        }
+                        key ++;
                     }
                 }
 
@@ -158,6 +160,7 @@ public class ItemManager {
             }
         }
         if(colIsValid[0] && colIsValid[2]){
+            colIsValid[1] = true;
             cols = 3;
         }else{
             for(int j = 0; j < 3; j++){
@@ -167,6 +170,7 @@ public class ItemManager {
             }
         }
         if(rowIsValid[0] && rowIsValid[2]){
+            rowIsValid[1] = true;
             rows = 3;
         }else{
             for(int j = 0; j < 3; j++){
@@ -175,18 +179,33 @@ public class ItemManager {
                 }
             }
         }
+        
+        for(int j = 0; j < 3; j++){
+            if(!colIsValid[j]){
+                recipeArray[j] = -1;
+                recipeArray[j + 3] = -1;
+                recipeArray[j + 6] = -1;
+             }
+            if(!rowIsValid[j]){
+                recipeArray[3 * j] = -1;
+                recipeArray[3 * j + 1] = -1;
+                recipeArray[3 * j + 2] = -1;
+            }
+        }
         String one = "";
         String two = "";
         String three = "";
+        char key = 'A';
         for(int j = 0; j < 9; j++){
-            if(recipeArray[j] != 0){
+            if(recipeArray[j] != -1){
                 if(one.length() < cols){
-                    one += (char)(65 + j);
+                    one += key;
                 }else if(two.length() < cols){
-                    two += (char)(65 + j);
+                    two += key;
                 }else{
-                    three += (char)(65 + j);
+                    three += key;
                 }
+                key++;
             }
         }
         if(rows == 3){
