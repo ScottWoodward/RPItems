@@ -182,13 +182,10 @@ public class ItemManager {
             }
         }
         if(rows == 3){
-            System.out.println("THREE ROWS");
             return new String[]{one, two, three};
         }else if(rows ==2){
-            System.out.println("TWO ROWS");
             return new String[]{one, two};
         }else{
-            System.out.println("ONE ROW");
             return new String[]{one};
         }
     }
