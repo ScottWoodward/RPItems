@@ -91,7 +91,7 @@ public class ItemManager {
                     }
 
                 }              
-                itemStack = new ItemStack(Material.getMaterial(baseItem));
+                itemStack = new ItemStack(Material.getMaterial(baseItem), itemFile.getInt("QuantityPerRecipe", 1));
                 meta = itemStack.getItemMeta();
                 meta.setDisplayName(name);
                 List<String> lore = new ArrayList<String>();
