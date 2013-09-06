@@ -79,6 +79,7 @@ public class ItemManager {
                 String name = itemFile.getString("Name");
                 int baseItem = itemFile.getInt("BaseItem");
                 int[] recipeArray = new int[9];
+                int[] dataArray = new int[9];
                 int repairMaterial = itemFile.getInt("RepairMaterial");
                 Set<String> attributes = new HashSet<String>();
                 if(itemFile.getBoolean("OverwriteBaseItem")){
@@ -106,8 +107,15 @@ public class ItemManager {
                 itemStack = attr.getStack();
                 final ShapedRecipe recipe = new ShapedRecipe(itemStack);
                 for(int j = 0; j < ItemManager.positions.length; j++){
-                    if(itemFile.getInt(ItemManager.positions[j]) != 0){
-                        recipeArray[j] = itemFile.getInt(ItemManager.positions[j]);
+                    if(itemFile.getString(ItemManager.positions[j]) != null){
+                        System.out.println(itemFile.getString(ItemManager.positions[j]));
+                        String[] slot = itemFile.getString(ItemManager.positions[j]).split("#");
+                        recipeArray[j] = Integer.valueOf(slot[0]);
+                        if(slot.length == 2){
+                            dataArray[j] = Integer.valueOf(slot[1]);
+                        }else{
+                            dataArray[j] = -1;
+                        }
                     }
                 }
 
@@ -123,7 +131,7 @@ public class ItemManager {
                 for(int j = 0; j < 9; j++){
                     if(recipeArray[j] != 0){
                         char key = (char)(65 + j);
-                        recipe.setIngredient(key, Material.getMaterial(recipeArray[j]));
+                        recipe.setIngredient(key, Material.getMaterial(recipeArray[j]), dataArray[j]);
                     }
                 }
 
