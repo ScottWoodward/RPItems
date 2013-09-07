@@ -86,7 +86,7 @@ public class ItemManager {
                     Iterator<Recipe> it = Bukkit.getServer().recipeIterator();
                     while(it.hasNext()){
                         Recipe rec = it.next();
-                        if(rec.getResult().getTypeId() == baseItem){
+                        if(!isCustomItem(rec.getResult()) && rec.getResult().getTypeId() == baseItem){
                             it.remove();
                         }
                     }

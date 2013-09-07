@@ -202,23 +202,26 @@ public class CraftListener implements Listener {
                 other = 0;
             }
             if(inv.getItem(1) == null && inv.getItem(0) == null){
-                System.out.println("BOTH SLOTS ARE EMPTY: ALLOWED");
+                //System.out.println("BOTH SLOTS ARE EMPTY: ALLOWED");
                 return;
             }
             if(event.getCursor().getTypeId() == Material.AIR.getId()){
-                System.out.println("REMOVING ITEM: ALLOWED");
+                //System.out.println("REMOVING ITEM: ALLOWED");
                 return;
             }else if(inv.getItem(other) == null){
-                System.out.println("SWAPPING WITH AN EMPTY SLOT: ALLOWED");
+                //System.out.println("SWAPPING WITH AN EMPTY SLOT: ALLOWED");
                 return;
             }else if(ItemManager.getInstance().areSameCustomItem(inv.getItem(other), event.getCursor())){
-                System.out.println("BOTH ARE SAME CUSTOM: ALLOWED");
+                //System.out.println("BOTH ARE SAME CUSTOM: ALLOWED");
                 return;
             }else if(inv.getItem(other).getTypeId() == Material.ENCHANTED_BOOK.getId()){
-                System.out.println("OTHER ITEM IS ENCHANTED BOOK: ALLOWED");
+                //System.out.println("OTHER ITEM IS ENCHANTED BOOK: ALLOWED");
                 return;
             }else if(event.getCursor().getTypeId() == Material.ENCHANTED_BOOK.getId()){
-                System.out.println("ENCHANTED BOOK: ALLOWED");
+                //System.out.println("ENCHANTED BOOK: ALLOWED");
+                return;
+            }else if(!ItemManager.getInstance().isCustomItem(inv.getItem(other)) && !ItemManager.getInstance().isCustomItem(event.getCursor())){
+                //System.out.println("BOTH NOT CUSTOM: ALLOWED");
                 return;
             }else{
                 event.setCancelled(true);
