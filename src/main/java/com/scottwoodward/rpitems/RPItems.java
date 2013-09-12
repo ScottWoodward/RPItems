@@ -19,15 +19,13 @@
 
 package com.scottwoodward.rpitems;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.scottwoodward.rpitems.commands.CommandManager;
 import com.scottwoodward.rpitems.items.ItemManager;
 import com.scottwoodward.rpitems.listeners.CraftListener;
+import com.scottwoodward.rpitems.listeners.InteractListener;
 
 /**
  * RPItems.java
@@ -46,9 +44,11 @@ public class RPItems extends JavaPlugin {
     @Override
     public void onEnable(){
         instance = this;
-        //ItemLoader.loadAllItems();
         ItemManager.getInstance().loadAllItems();
+        ItemManager.getInstance().loadAllPrefixes();
+        ItemManager.getInstance().loadAllSuffixes();
         Bukkit.getPluginManager().registerEvents(new CraftListener(), this);
+        Bukkit.getPluginManager().registerEvents(new InteractListener(), this);
         getCommand("spawnitem").setExecutor(new CommandManager());
         getCommand("addlore").setExecutor(new CommandManager());
     }
@@ -56,4 +56,5 @@ public class RPItems extends JavaPlugin {
     public static RPItems getInstance(){
         return instance;
     }
+    
 }

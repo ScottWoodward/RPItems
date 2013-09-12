@@ -20,9 +20,11 @@ package com.scottwoodward.rpitems.items;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 
@@ -31,6 +33,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ShapedRecipe;
@@ -51,18 +54,60 @@ public class ItemManager {
 
     private static ItemManager instance;
     private Set<SimpleItem> items;
+    private Map<String, Effect> effects;
+    private Map<String, Prefix> prefixes;
     private static String[] positions = {"Recipe.Top.Left", "Recipe.Top.Middle", "Recipe.Top.Right", "Recipe.Middle.Left", "Recipe.Middle.Middle", "Recipe.Middle.Right", "Recipe.Bottom.Left", "Recipe.Bottom.Middle", "Recipe.Bottom.Right" };
 
 
     private ItemManager(){
         items = new HashSet<SimpleItem>();
+        effects = new HashMap<String, Effect>();
+        prefixes = new HashMap<String, Prefix>();
     }
 
     public static ItemManager getInstance(){
         if(instance == null){
             instance = new ItemManager();
+            instance.effects.put("fireball".toLowerCase(), new FireballEffect());
         }
         return instance;
+    }
+
+    public void loadAllPrefixes(){
+        String path = RPItems.getInstance().getDataFolder() + File.separator + "Prefixes";
+        File dir = new File(path);
+        String[] files = dir.list();
+        for(int i = 0; i < files.length; i++){
+            File file = new File(path + File.separator + files[i]);
+            FileConfiguration prefixFile = new YamlConfiguration();
+            try{
+            prefixFile.load(file);
+            String name = prefixFile.getString("Name");
+            String effect = prefixFile.getString("Effect");
+            int cooldown = prefixFile.getInt("Cooldown");
+            String lore = prefixFile.getString("Lore");
+            String type = prefixFile.getString("Type");
+            Trigger trigger = null;
+            if(type.equalsIgnoreCase("RightClick")){
+                trigger = Trigger.RIGHT_CLICK;
+            }else if(type.equalsIgnoreCase("LeftClick")){
+                trigger = Trigger.LEFT_CLICK;
+            }else if(type.equalsIgnoreCase("OnHit")){
+                trigger = Trigger.ON_HIT;
+            }else if(type.equalsIgnoreCase("OnKill")){
+                trigger = Trigger.ON_KILL;
+            }
+            System.out.println(type);
+            Prefix prefix = new Prefix(effect, cooldown, trigger, lore, name);
+            prefixes.put(name.toLowerCase(), prefix);
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void loadAllSuffixes(){
+
     }
 
     public void loadAllItems(){
@@ -90,8 +135,10 @@ public class ItemManager {
                             it.remove();
                         }
                     }
-                }              
-                itemStack = new ItemStack(Material.getMaterial(baseItem), itemFile.getInt("QuantityPerRecipe", 1));
+                }  
+                short data = (short)itemFile.getInt("DataValue", 0);
+                itemStack = new ItemStack(Material.getMaterial(baseItem), itemFile.getInt("QuantityPerRecipe", 1), data);
+
                 meta = itemStack.getItemMeta();
                 meta.setDisplayName(name);
                 List<String> lore = new ArrayList<String>();
@@ -179,13 +226,13 @@ public class ItemManager {
                 }
             }
         }
-        
+
         for(int j = 0; j < 3; j++){
             if(!colIsValid[j]){
                 recipeArray[j] = -1;
                 recipeArray[j + 3] = -1;
                 recipeArray[j + 6] = -1;
-             }
+            }
             if(!rowIsValid[j]){
                 recipeArray[3 * j] = -1;
                 recipeArray[3 * j + 1] = -1;
@@ -277,5 +324,44 @@ public class ItemManager {
             }
         }
         return null;
+    }
+
+    public Material getRepairMaterial(ItemStack itemStack){
+        for(SimpleItem item : items){
+            if(item.getBaseItem() == itemStack.getTypeId()){
+                ItemMeta meta = itemStack.getItemMeta();
+                if(meta.getLore() == null){
+                }else{
+                    List<String> lore = meta.getLore();
+                    if(ChatColor.stripColor(lore.get(0)).contains(item.getName())){
+                        return Material.getMaterial(item.getRepairMaterial());
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    public void executeEffects(Player player, ItemStack item, Trigger type){
+        String fullName = item.getItemMeta().getDisplayName();
+        String baseName = getBaseCustomItem(item).getItemMeta().getDisplayName();
+        String[] affixes = fullName.split(baseName);
+        for(int i = 0; i < affixes.length; i++){
+            System.out.println("HAS AFFIX: " + affixes[i]);
+        }
+        if(affixes.length == 0){
+            System.out.println("HAS NO AFFIXES");
+            return;
+        }
+        Prefix prefix = prefixes.get(affixes[1].trim().toLowerCase());
+        if(prefix == null){
+            System.out.println("NO PREFIX FOUND FOR:" + affixes[1] + ":");
+            return;
+        }   
+        if(type == Trigger.RIGHT_CLICK){
+            //if(prefix.getTrigger() == EffectType.RIGHT_CLICK){
+                ((RightClickEffect)effects.get(prefix.getEffectName().toLowerCase())).execute(player);
+            //}
+        }
     }
 } 

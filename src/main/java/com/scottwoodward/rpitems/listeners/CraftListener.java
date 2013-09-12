@@ -41,55 +41,6 @@ import com.scottwoodward.rpitems.items.ItemManager;
  */
 public class CraftListener implements Listener {
 
-    /*@EventHandler
-    public void onCraftPrepare(PrepareItemCraftEvent event) {
-        ItemStack[] matrix = event.getInventory().getMatrix();
-        Set<ItemStack> notEmpty = new HashSet<ItemStack>();
-        for(int i = 0; i < matrix.length; i++){
-            if(matrix[i] == null){
-            }else if(matrix[i].getTypeId() == Material.AIR.getId()){
-            }else{
-                notEmpty.add(matrix[i]);
-            }
-        }
-        if(notEmpty.size() == 2){
-            ItemStack[] items = new ItemStack[2];
-            items = notEmpty.toArray(items);
-            if(items[0].getTypeId() == items[1].getTypeId()){
-                if((items[0].getItemMeta() != null) && (items[1].getItemMeta() != null)){
-                    if((items[0].getItemMeta().getLore() != null) && (items[1].getItemMeta().getLore() != null)){
-                        List<String> first = items[0].getItemMeta().getLore();
-                        List<String> second = items[1].getItemMeta().getLore();
-                        for(String lore : first){
-                            if(second.contains(lore)){
-                                double max = Material.getMaterial(items[0].getTypeId()).getMaxDurability();
-                                double one = max - items[0].getDurability();
-                                double two = max - items[1].getDurability();
-                                double dura = (one + two) * 1.12;
-                                ItemStack result = items[0].clone();
-                                result.setDurability((short)(max - dura));
-                                event.getInventory().setResult(result);
-                                return;
-                            }
-                        }
-                        event.getInventory().setResult(null);
-                        return;
-                    }else if((items[0].getItemMeta().getLore() == null) && (items[1].getItemMeta().getLore() == null)){
-                        return;
-                    }else{
-                        event.getInventory().setResult(null);
-                        return;
-                    }
-                }else if((items[0].getItemMeta() != null) || (items[1].getItemMeta() != null)){
-                    event.getInventory().setResult(null);
-                    return;
-                }else{
-                    return;
-                }
-            }
-        }
-    }*/
-
     @EventHandler
     public void onCraftPrepare(PrepareItemCraftEvent event) {
 
@@ -109,6 +60,9 @@ public class CraftListener implements Listener {
                 //System.out.println("TWO SLOTS FILLED");
                 ItemStack[] items = new ItemStack[2];
                 items = notEmpty.toArray(items);
+                if(!ItemManager.getInstance().isCustomItem(items[0]) && !ItemManager.getInstance().isCustomItem(items[1])){
+                    return;
+                }
                 if(ItemManager.getInstance().areSameCustomItem(items[0], items[1])){
                     double max = Material.getMaterial(items[0].getTypeId()).getMaxDurability();
                     double one = max - items[0].getDurability();
@@ -126,67 +80,6 @@ public class CraftListener implements Listener {
             }
         }
     }
-
-    /*@EventHandler
-    public void onInventoryClick(InventoryClickEvent event){
-        if(event.getInventory() instanceof AnvilInventory){
-            if(event.getSlotType() != SlotType.CRAFTING){
-                return;
-            }
-            Inventory inv = event.getView().getTopInventory();
-            ItemStack[] contents = inv.getContents();
-            int i = 1;
-            if(event.getSlot() == 1){
-                i = 0;
-            }
-            if(contents[i] == null){
-                //System.out.println("Clicked on first slot, slot 2 empty: allowed");
-                return;
-            }else{
-                ItemStack onCursor = event.getCursor();
-                if(onCursor.getType().getId() == Material.AIR.getId()){
-                    //System.out.println("Clicked on first slot, cursor empty: allowed");
-                    return;
-                }else{
-                    //System.out.println("Clicked on first slot, second slot full: CHECK");
-                    ItemStack first = event.getCursor();
-                    ItemStack second = contents[i];
-                    ItemMeta firstMeta = first.getItemMeta();
-                    ItemMeta secondMeta = second.getItemMeta();
-                    if(firstMeta == null && secondMeta == null){
-                        //System.out.println("BOTH META NULL: ALLOWED");
-                        return;
-                    }else if(firstMeta != null && secondMeta != null){
-                        //System.out.println("BOTH META VALID: CHECK FURTHER");
-                        List<String> firstLore = firstMeta.getLore();
-                        List<String> secondLore = secondMeta.getLore();
-                        if(firstLore == null && secondLore == null){
-                            //System.out.println("BOTH NULL, ALLOWED");
-                            return;
-                        }else if(firstLore == null || secondLore == null){
-                            //System.out.println("ONE NULL, NOT ALLOWED");
-                            if(first.getTypeId() == Material.ENCHANTED_BOOK.getId()){
-                                return;
-                            }
-                            event.setCancelled(true);
-                            return;
-                        }
-                        for(String lore : firstLore){
-                            if(secondLore.contains(lore)){
-                                //System.out.println("LORES MATCH, ALLOWED");
-                                return;
-                            }
-                        }
-                        //System.out.println("NO MATCHING LORES, NOT ALLOWED");
-                        event.setCancelled(true);
-                        return;
-                    }else{
-                        //System.out.println("AT LEAST ONE META VALID: CHECK FURTHER");
-                    }
-                }
-            }
-        }
-    }*/
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event){
@@ -219,6 +112,9 @@ public class CraftListener implements Listener {
                 return;
             }else if(event.getCursor().getTypeId() == Material.ENCHANTED_BOOK.getId()){
                 //System.out.println("ENCHANTED BOOK: ALLOWED");
+                return;
+            }else if(event.getCursor().getTypeId() == ItemManager.getInstance().getRepairMaterial(inv.getItem(other)).getId()){
+                //System.out.println("REPAIR MATERIAL: ALLOWED");
                 return;
             }else if(!ItemManager.getInstance().isCustomItem(inv.getItem(other)) && !ItemManager.getInstance().isCustomItem(event.getCursor())){
                 //System.out.println("BOTH NOT CUSTOM: ALLOWED");

@@ -1,6 +1,7 @@
 Name: Wooden Sword
 BaseItem: 268
 RepairMaterial: 5
+OverwriteBaseItem: true
 Recipe:
   Top:
     Left:

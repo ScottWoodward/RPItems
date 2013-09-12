@@ -1,6 +1,7 @@
 Name: Stone Sword
 BaseItem: 272
 RepairMaterial: 4
+OverwriteBaseItem: true
 Recipe:
   Top:
     Left:

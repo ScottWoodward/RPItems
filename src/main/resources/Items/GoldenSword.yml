@@ -1,19 +1,19 @@
-Name: Diamond Sword
-BaseItem: 276
-RepairMaterial: 265
+Name: Golden Sword
+BaseItem: 283
+RepairMaterial: 266
 OverwriteBaseItem: true
 Recipe:
   Top:
     Left:
-    Middle: 264
+    Middle: 266
     Right: 
   Middle:
-    Left:
-    Middle: 264
+    Left: 
+    Middle: 266
     Right:
   Bottom:
     Left: 
     Middle: 280
     Right:
 Attributes:
-  AttackDamage: +7
+  AttackDamage: +4

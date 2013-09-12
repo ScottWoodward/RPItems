@@ -1,6 +1,7 @@
 Name: Iron Sword
 BaseItem: 267
 RepairMaterial: 265
+OverwriteBaseItem: true
 Recipe:
   Top:
     Left:
