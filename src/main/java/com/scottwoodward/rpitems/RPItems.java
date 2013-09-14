@@ -22,7 +22,9 @@ package com.scottwoodward.rpitems;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.scottwoodward.rpitems.affixes.AffixManager;
 import com.scottwoodward.rpitems.commands.CommandManager;
+import com.scottwoodward.rpitems.effects.EffectManager;
 import com.scottwoodward.rpitems.items.ItemManager;
 import com.scottwoodward.rpitems.listeners.CraftListener;
 import com.scottwoodward.rpitems.listeners.InteractListener;
@@ -45,12 +47,13 @@ public class RPItems extends JavaPlugin {
     public void onEnable(){
         instance = this;
         ItemManager.getInstance().loadAllItems();
-        ItemManager.getInstance().loadAllPrefixes();
-        ItemManager.getInstance().loadAllSuffixes();
+        AffixManager.getInstance().loadAffixes();
+        //EffectManager.getInstance().loadAllEffects();
         Bukkit.getPluginManager().registerEvents(new CraftListener(), this);
         Bukkit.getPluginManager().registerEvents(new InteractListener(), this);
         getCommand("spawnitem").setExecutor(new CommandManager());
         getCommand("addlore").setExecutor(new CommandManager());
+        getCommand("addaffix").setExecutor(new CommandManager());
     }
     
     public static RPItems getInstance(){

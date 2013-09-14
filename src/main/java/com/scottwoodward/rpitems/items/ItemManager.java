@@ -40,6 +40,10 @@ import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import com.scottwoodward.rpitems.RPItems;
+import com.scottwoodward.rpitems.affixes.Affix;
+import com.scottwoodward.rpitems.effects.Effect;
+import com.scottwoodward.rpitems.effects.FireballEffect;
+import com.scottwoodward.rpitems.effects.RightClickEffect;
 import com.scottwoodward.rpitems.items.Attributes.Attribute;
 import com.scottwoodward.rpitems.items.Attributes.AttributeType;
 import com.scottwoodward.rpitems.items.Attributes.Operation;
@@ -54,60 +58,18 @@ public class ItemManager {
 
     private static ItemManager instance;
     private Set<SimpleItem> items;
-    private Map<String, Effect> effects;
-    private Map<String, Prefix> prefixes;
     private static String[] positions = {"Recipe.Top.Left", "Recipe.Top.Middle", "Recipe.Top.Right", "Recipe.Middle.Left", "Recipe.Middle.Middle", "Recipe.Middle.Right", "Recipe.Bottom.Left", "Recipe.Bottom.Middle", "Recipe.Bottom.Right" };
 
 
     private ItemManager(){
         items = new HashSet<SimpleItem>();
-        effects = new HashMap<String, Effect>();
-        prefixes = new HashMap<String, Prefix>();
     }
 
     public static ItemManager getInstance(){
         if(instance == null){
             instance = new ItemManager();
-            instance.effects.put("fireball".toLowerCase(), new FireballEffect());
         }
         return instance;
-    }
-
-    public void loadAllPrefixes(){
-        String path = RPItems.getInstance().getDataFolder() + File.separator + "Prefixes";
-        File dir = new File(path);
-        String[] files = dir.list();
-        for(int i = 0; i < files.length; i++){
-            File file = new File(path + File.separator + files[i]);
-            FileConfiguration prefixFile = new YamlConfiguration();
-            try{
-            prefixFile.load(file);
-            String name = prefixFile.getString("Name");
-            String effect = prefixFile.getString("Effect");
-            int cooldown = prefixFile.getInt("Cooldown");
-            String lore = prefixFile.getString("Lore");
-            String type = prefixFile.getString("Type");
-            Trigger trigger = null;
-            if(type.equalsIgnoreCase("RightClick")){
-                trigger = Trigger.RIGHT_CLICK;
-            }else if(type.equalsIgnoreCase("LeftClick")){
-                trigger = Trigger.LEFT_CLICK;
-            }else if(type.equalsIgnoreCase("OnHit")){
-                trigger = Trigger.ON_HIT;
-            }else if(type.equalsIgnoreCase("OnKill")){
-                trigger = Trigger.ON_KILL;
-            }
-            System.out.println(type);
-            Prefix prefix = new Prefix(effect, cooldown, trigger, lore, name);
-            prefixes.put(name.toLowerCase(), prefix);
-            }catch(Exception e){
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public void loadAllSuffixes(){
-
     }
 
     public void loadAllItems(){
@@ -342,26 +304,4 @@ public class ItemManager {
         return null;
     }
 
-    public void executeEffects(Player player, ItemStack item, Trigger type){
-        String fullName = item.getItemMeta().getDisplayName();
-        String baseName = getBaseCustomItem(item).getItemMeta().getDisplayName();
-        String[] affixes = fullName.split(baseName);
-        for(int i = 0; i < affixes.length; i++){
-            System.out.println("HAS AFFIX: " + affixes[i]);
-        }
-        if(affixes.length == 0){
-            System.out.println("HAS NO AFFIXES");
-            return;
-        }
-        Prefix prefix = prefixes.get(affixes[1].trim().toLowerCase());
-        if(prefix == null){
-            System.out.println("NO PREFIX FOUND FOR:" + affixes[1] + ":");
-            return;
-        }   
-        if(type == Trigger.RIGHT_CLICK){
-            //if(prefix.getTrigger() == EffectType.RIGHT_CLICK){
-                ((RightClickEffect)effects.get(prefix.getEffectName().toLowerCase())).execute(player);
-            //}
-        }
-    }
 } 

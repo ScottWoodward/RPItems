@@ -13,11 +13,19 @@ commands:
     usage: /addlore <Lore>
     permission: rpitems.command.addlore
     permission-message: You don't have permission to add lore
-      
+  addaffix:
+    description: Adds an affix to an item.
+    usage: /addaffix <Affix>
+    permission: rpitems.command.addaffix
+    permission-message: You don't have permission to add an affix
+    
 permissions:
   rpitems.command.spawnitem:
     description: Gives access to /spawnitem
     default: op
   rpitems.command.addlore:
     description: Gives access to /addlore
+    default: op
+  rpitems.command.addaffix:
+    description: Gives access to /addaffix
     default: op

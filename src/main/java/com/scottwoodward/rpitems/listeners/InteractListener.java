@@ -24,7 +24,8 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
-import com.scottwoodward.rpitems.items.Trigger;
+import com.scottwoodward.rpitems.affixes.AffixManager;
+import com.scottwoodward.rpitems.affixes.Trigger;
 import com.scottwoodward.rpitems.items.ItemManager;
 
 /**
@@ -41,7 +42,7 @@ public class InteractListener implements Listener{
             ItemStack item = event.getPlayer().getItemInHand();
             if(ItemManager.getInstance().isCustomItem(item)){
                 System.out.println("ITEM IS CUSTOM, FIRING RIGHT CLICK EVENTS");
-                ItemManager.getInstance().executeEffects(event.getPlayer(), item, Trigger.RIGHT_CLICK);
+                AffixManager.getInstance().executeAffixes(item, Trigger.RIGHT_CLICK, event.getPlayer(), null);
             }
         }
     }

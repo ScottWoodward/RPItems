@@ -41,6 +41,9 @@ public class CommandManager implements CommandExecutor {
         }else if(cmd.getName().equalsIgnoreCase("addlore")){
             AddLoreCommand.execute(sender, args);
             return true;
+        }else if(cmd.getName().equalsIgnoreCase("addaffix")){
+            AddAffixCommand.execute(sender, args);
+            return true;
         }
         return false;
     }
