@@ -27,7 +27,7 @@ import com.scottwoodward.rpitems.commands.CommandManager;
 import com.scottwoodward.rpitems.effects.EffectManager;
 import com.scottwoodward.rpitems.items.ItemManager;
 import com.scottwoodward.rpitems.listeners.CraftListener;
-import com.scottwoodward.rpitems.listeners.InteractListener;
+import com.scottwoodward.rpitems.listeners.TriggerListener;
 
 /**
  * RPItems.java
@@ -50,7 +50,7 @@ public class RPItems extends JavaPlugin {
         AffixManager.getInstance().loadAffixes();
         //EffectManager.getInstance().loadAllEffects();
         Bukkit.getPluginManager().registerEvents(new CraftListener(), this);
-        Bukkit.getPluginManager().registerEvents(new InteractListener(), this);
+        Bukkit.getPluginManager().registerEvents(new TriggerListener(), this);
         getCommand("spawnitem").setExecutor(new CommandManager());
         getCommand("addlore").setExecutor(new CommandManager());
         getCommand("addaffix").setExecutor(new CommandManager());

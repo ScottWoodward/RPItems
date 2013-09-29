@@ -19,7 +19,6 @@
 package com.scottwoodward.rpitems.affixes;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -74,7 +73,8 @@ public class AffixManager {
                 Trait trait;
                 String effectName;
                 int cooldown;
-                String lore;
+                int charges;
+                String lore = null;
                 Affix affix;
                 Trigger trigger;
 
@@ -91,8 +91,9 @@ public class AffixManager {
                     cooldown = affixFile.getInt("Traits." + key + ".cooldown");
                     effectName = key;
                     lore = affixFile.getString("Traits." + key + ".lore");
+                    charges = affixFile.getInt("Traits." + key + ".charges");  
                     trigger = Trigger.fromString(affixFile.getString("Traits." + key + ".trigger"));     
-                    trait = new Trait(effectName, cooldown, lore, trigger);
+                    trait = new Trait(effectName, cooldown, lore, trigger, charges);
                     System.out.println("Adding trait: " + effectName + ", " + cooldown + ", " + lore + ", " + affixFile.getString("Traits." + key + ".trigger"));
                     affix.addTrait(trait);
                 }
@@ -122,7 +123,7 @@ public class AffixManager {
             return;
         }
     }
-    
+
     public Affix getAffix(String name){
         return affixes.get(name.toLowerCase());
     }
@@ -149,7 +150,10 @@ public class AffixManager {
             Trait trait = traits.get(0);
             lore.add(1, ChatColor.DARK_AQUA + trait.getLore());
             lore.add(2, ChatColor.DARK_GREEN + "Activate: " + trait.getTrigger().toString());
-            lore.add(3, ChatColor.GREEN + "Cooldown: " + trait.getCooldown());
+            lore.add(3, ChatColor.AQUA + "Charges: " + trait.getCharges());
+            if(trait.getCooldown() != 0){
+                lore.add(4, ChatColor.GREEN + "Cooldown: " + trait.getCooldown());
+            }
             meta.setLore(lore);
             item.setItemMeta(meta);
         }

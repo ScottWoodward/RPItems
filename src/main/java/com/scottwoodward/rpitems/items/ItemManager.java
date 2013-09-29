@@ -304,4 +304,35 @@ public class ItemManager {
         return null;
     }
 
+    public ItemStack setCharges(ItemStack item, int charges){
+        if(isCustomItem(item)){
+            List<String> lores = item.getItemMeta().getLore();
+            String newLore = ChatColor.AQUA + "Charges: " + charges;
+            for(int i = 0; i < lores.size(); i++){
+                if(lores.get(i).contains(ChatColor.AQUA + "Charges:")){
+                    lores.set(i, newLore);
+                }
+            }
+            ItemMeta meta = item.getItemMeta();
+            meta.setLore(lores);
+            item.setItemMeta(meta);
+            return item;
+        }else{
+            return item;
+        }
+    }
+
+    public int getCharges(ItemStack item){
+        if(isCustomItem(item)){
+            List<String> lores = item.getItemMeta().getLore();
+            for(int i = 0; i < lores.size(); i++){
+                if(lores.get(i).contains(ChatColor.AQUA + "Charges:")){
+                    return Integer.valueOf(lores.get(i).replaceAll( "[^\\d]", "" ));
+                }
+            }
+        }
+        return 0;
+
+    }
+
 } 

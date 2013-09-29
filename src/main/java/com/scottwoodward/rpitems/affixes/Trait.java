@@ -30,12 +30,14 @@ public class Trait {
     private int cooldown;
     private String lore;
     private Trigger trigger;
+    private int charges;
     
-    Trait(String effectName, int cooldown, String lore, Trigger trigger){
+    Trait(String effectName, int cooldown, String lore, Trigger trigger, int charges){
         this.effectName = effectName;
         this.cooldown = cooldown;
         this.lore = lore;
         this.trigger = trigger;
+        this.charges = charges;
     }
 
     String getEffectName() {
@@ -52,6 +54,10 @@ public class Trait {
     
     Trigger getTrigger() {
         return trigger;
+    }
+    
+    int getCharges() {
+        return charges;
     }
     
     

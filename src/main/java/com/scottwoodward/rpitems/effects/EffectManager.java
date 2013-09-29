@@ -18,18 +18,10 @@
  */
 package com.scottwoodward.rpitems.effects;
 
-import java.io.File;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
 
 import org.bukkit.entity.LivingEntity;
-
-import com.scottwoodward.rpitems.RPItems;
 
 /**
  * EffectManager.java
