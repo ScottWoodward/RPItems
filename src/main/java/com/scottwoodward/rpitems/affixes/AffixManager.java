@@ -108,7 +108,7 @@ public class AffixManager {
     public void executeAffixes(ItemStack item, Trigger trigger, LivingEntity holder, LivingEntity target){
         if(ItemManager.getInstance().isCustomItem(item)){
             String[] affixNames = item.getItemMeta().getLore().get(0).split(ItemManager.getInstance().getBaseCustomItem(item).getItemMeta().getDisplayName());
-            if(affixNames.length == 1){
+            if(affixNames.length <= 1){
                 return;
             }
             System.out.println(affixNames[0] + ":" + affixNames[1]);
