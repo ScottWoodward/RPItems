@@ -20,11 +20,9 @@ package com.scottwoodward.rpitems.items;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 
@@ -33,17 +31,12 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import com.scottwoodward.rpitems.RPItems;
-import com.scottwoodward.rpitems.affixes.Affix;
-import com.scottwoodward.rpitems.effects.Effect;
-import com.scottwoodward.rpitems.effects.FireballEffect;
-import com.scottwoodward.rpitems.effects.RightClickEffect;
 import com.scottwoodward.rpitems.items.Attributes.Attribute;
 import com.scottwoodward.rpitems.items.Attributes.AttributeType;
 import com.scottwoodward.rpitems.items.Attributes.Operation;

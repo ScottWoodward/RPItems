@@ -326,7 +326,6 @@ public class Attributes {
 }*/
 
 package com.scottwoodward.rpitems.items;
-
 import java.util.Iterator;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentMap;
@@ -336,8 +335,7 @@ import javax.annotation.Nullable;
 
 import org.bukkit.inventory.ItemStack;
 
-import com.scottwoodward.rpitems.items.NbtFactory.NbtCompound;
-import com.scottwoodward.rpitems.items.NbtFactory.NbtList;
+
 import com.google.common.base.Function;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
@@ -350,15 +348,15 @@ public class Attributes {
         MULTIPLY_PERCENTAGE(1),
         ADD_PERCENTAGE(2);
         private int id;
-        
+
         private Operation(int id) {
             this.id = id;
         }
-        
+
         public int getId() {
             return id;
         }
-        
+
         public static Operation fromId(int id) {
             // Linear scan is very fast for small N
             for (Operation op : values()) {
@@ -369,7 +367,7 @@ public class Attributes {
             throw new IllegalArgumentException("Corrupt operation ID " + id + " detected.");
         }
     }
-    
+
     public static class AttributeType {
         private static ConcurrentMap<String, AttributeType> LOOKUP = Maps.newConcurrentMap();
         public static final AttributeType GENERIC_MAX_HEALTH = new AttributeType("generic.maxHealth").register();
@@ -377,9 +375,9 @@ public class Attributes {
         public static final AttributeType GENERIC_ATTACK_DAMAGE = new AttributeType("generic.attackDamage").register();
         public static final AttributeType GENERIC_MOVEMENT_SPEED = new AttributeType("generic.movementSpeed").register();
         public static final AttributeType GENERIC_KNOCKBACK_RESISTANCE = new AttributeType("generic.knockbackResistance").register();
-        
+
         private final String minecraftId;
-        
+
         /**
          * Construct a new attribute type.
          * <p>
@@ -389,7 +387,7 @@ public class Attributes {
         public AttributeType(String minecraftId) {
             this.minecraftId = minecraftId;
         }
-        
+
         /**
          * Retrieve the associated minecraft ID.
          * @return The associated ID.
@@ -397,17 +395,17 @@ public class Attributes {
         public String getMinecraftId() {
             return minecraftId;
         }
-        
+
         /**
          * Register the type in the central registry.
          * @return The registered type.
          */
-        // Constructors should have no side-effects!  
+        // Constructors should have no side-effects!
         public AttributeType register() {
             AttributeType old = LOOKUP.putIfAbsent(minecraftId, this);
             return old != null ? old : this;
         }
-        
+
         /**
          * Retrieve the attribute type associated with a given ID.
          * @param minecraftId The ID to search for.
@@ -416,7 +414,7 @@ public class Attributes {
         public static AttributeType fromId(String minecraftId) {
             return LOOKUP.get(minecraftId);
         }
-        
+
         /**
          * Retrieve every registered attribute type.
          * @return Every type.
@@ -427,7 +425,7 @@ public class Attributes {
     }
 
     public static class Attribute {
-        private NbtCompound data;
+        private NbtFactory.NbtCompound data;
 
         private Attribute(Builder builder) {
             data = NbtFactory.createCompound();
@@ -437,11 +435,11 @@ public class Attributes {
             setName(builder.name);
             setUUID(builder.uuid);
         }
-        
-        private Attribute(NbtCompound data) {
+
+        private Attribute(NbtFactory.NbtCompound data) {
             this.data = data;
         }
-        
+
         public double getAmount() {
             return data.getDouble("Amount", 0.0);
         }
@@ -473,6 +471,7 @@ public class Attributes {
         }
 
         public void setName(@Nonnull String name) {
+            Preconditions.checkNotNull(name, "name cannot be NULL.");
             data.put("Name", name);
         }
 
@@ -493,7 +492,7 @@ public class Attributes {
         public static Builder newBuilder() {
             return new Builder().uuid(UUID.randomUUID()).operation(Operation.ADD_NUMBER);
         }
-        
+
         // Makes it easier to construct an attribute
         public static class Builder {
             private double amount;
@@ -505,7 +504,7 @@ public class Attributes {
             private Builder() {
                 // Don't make this accessible
             }
-            
+
             public Builder amount(double amount) {
                 this.amount = amount;
                 return this;
@@ -531,20 +530,20 @@ public class Attributes {
             }
         }
     }
-    
+
     // This may be modified
     public ItemStack stack;
-    private NbtList attributes;
-    
+    private NbtFactory.NbtList attributes;
+
     public Attributes(ItemStack stack) {
         // Create a CraftItemStack (under the hood)
         this.stack = NbtFactory.getCraftItemStack(stack);
-        
+
         // Load NBT
-        NbtCompound nbt = NbtFactory.fromItemTag(this.stack);
+        NbtFactory.NbtCompound nbt = NbtFactory.fromItemTag(this.stack);
         this.attributes = nbt.getList("AttributeModifiers", true);
     }
-    
+
     /**
      * Retrieve the modified item stack.
      * @return The modified item stack.
@@ -552,7 +551,7 @@ public class Attributes {
     public ItemStack getStack() {
         return stack;
     }
-    
+
     /**
      * Retrieve the number of attributes.
      * @return Number of attributes.
@@ -560,15 +559,16 @@ public class Attributes {
     public int size() {
         return attributes.size();
     }
-    
+
     /**
      * Add a new attribute to the list.
      * @param attribute - the new attribute.
      */
     public void add(Attribute attribute) {
+        Preconditions.checkNotNull(attribute.getName(), "must specify an attribute name.");
         attributes.add(attribute.data);
     }
-    
+
     /**
      * Remove the first instance of the given attribute.
      * <p>
@@ -578,7 +578,7 @@ public class Attributes {
      */
     public boolean remove(Attribute attribute) {
         UUID uuid = attribute.getUUID();
-        
+
         for (Iterator<Attribute> it = values().iterator(); it.hasNext(); ) {
             if (Objects.equal(it.next().getUUID(), uuid)) {
                 it.remove();
@@ -587,18 +587,18 @@ public class Attributes {
         }
         return false;
     }
-    
+
     public void clear() {
         attributes.clear();
     }
-    
+
     /**
      * Retrieve the attribute at a given index.
      * @param index - the index to look up.
      * @return The attribute at that index.
      */
     public Attribute get(int index) {
-        return new Attribute((NbtCompound) attributes.get(index));
+        return new Attribute((NbtFactory.NbtCompound) attributes.get(index));
     }
 
     // We can't make Attributes itself iterable without splitting it up into separate classes
@@ -606,13 +606,13 @@ public class Attributes {
         return new Iterable<Attribute>() {
             @Override
             public Iterator<Attribute> iterator() {
-                return Iterators.transform(attributes.iterator(), 
-                  new Function<Object, Attribute>() {
-                    @Override
-                    public Attribute apply(@Nullable Object element) {
-                        return new Attribute((NbtCompound) element);
-                    }
-                });
+                return Iterators.transform(attributes.iterator(),
+                        new Function<Object, Attribute>() {
+                            @Override
+                            public Attribute apply(@Nullable Object element) {
+                                return new Attribute((NbtFactory.NbtCompound) element);
+                            }
+                        });
             }
         };
     }
